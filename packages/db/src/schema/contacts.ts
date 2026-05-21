@@ -10,9 +10,10 @@ import {
 import { companies } from "./companies.js";
 
 export type RecentPost = {
+  source: "twitter" | "linkedin" | "blog";
   url: string;
   text: string;
-  postedAt?: string;
+  publishedAt: string;
 };
 
 export const contacts = pgTable(

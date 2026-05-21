@@ -3,7 +3,17 @@
     "allow": [
       "Bash(pnpm install *)",
       "Bash(pnpm build *)",
-      "Bash(pnpm typecheck *)"
+      "Bash(pnpm typecheck *)",
+      "Bash(pnpm --filter @job-hunter/scrapers smoke)",
+      "Bash(curl -sS \"https://api.ycombinator.com/v0.1/companies?batch=X26,W26,S25&isHiring=true&page=1\" -H \"User-Agent: JobHunterBot/0.1\" -H \"Accept: application/json\")",
+      "Bash(curl -sS \"https://api.ycombinator.com/v0.1/companies?isHiring=true&page=1\" -H \"User-Agent: JobHunterBot/0.1\" -H \"Accept: application/json\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); c=d['companies'][0] if d['companies'] else {}; print\\('TOP-LEVEL KEYS:', list\\(d.keys\\(\\)\\)\\); print\\('COMPANY KEYS:', list\\(c.keys\\(\\)\\)\\); print\\('TOTAL PAGES:', d.get\\('totalPages'\\)\\); print\\('NUM ON PAGE:', len\\(d['companies']\\)\\); print\\('BATCH SAMPLE:', [x.get\\('batch'\\) for x in d['companies'][:10]]\\)\")",
+      "Bash(node -e \"let d=''; process.stdin.on\\('data',c=>d+=c\\); process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\); const c=j.companies[0]||{}; console.log\\('TOP KEYS:', Object.keys\\(j\\)\\); console.log\\('COMPANY KEYS:', Object.keys\\(c\\)\\); console.log\\('TOTAL PAGES:', j.totalPages\\); console.log\\('COUNT PG1:', j.companies.length\\); console.log\\('BATCHES SAMPLE:', j.companies.slice\\(0,15\\).map\\(x=>x.batch\\)\\);}\\)\")",
+      "Bash(yes \"\")",
+      "Bash(pnpm --filter @job-hunter/db db:push)",
+      "Bash(pnpm view *)",
+      "Bash(node -e ' *)",
+      "Bash(pnpm --filter @job-hunter/icp build)"
     ]
   }
 }

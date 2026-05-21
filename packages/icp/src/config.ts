@@ -76,7 +76,7 @@ export const config: IcpConfig = {
       fundingSources: [
         "https://inc42.com/feed/",
         "https://yourstory.com/feed",
-        "https://entrackr.com/feed/",
+        "https://startuptalky.com/feed/",
       ],
     },
     singapore_sea: {
@@ -86,7 +86,7 @@ export const config: IcpConfig = {
       visaSignalRequired: true,
       fundingSources: [
         "https://e27.co/feed/",
-        "https://www.techinasia.com/feed",
+        "https://www.dealstreetasia.com/feed/",
       ],
     },
     usa_remote: {
