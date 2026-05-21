@@ -1,0 +1,22 @@
+{
+  "name": "job-hunter",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.26.1",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "clean": "turbo clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "@job-hunter/icp": "workspace:*",
+    "turbo": "^2.1.0",
+    "typescript": "^5.6.0",
+    "@types/node": "^22.0.0"
+  }
+}
