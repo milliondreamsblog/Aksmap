@@ -1,0 +1,32 @@
+{
+  "name": "@job-hunter/workers",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist .turbo",
+    "inngest:dev": "npx inngest-cli@latest dev -u http://localhost:3001/api/inngest"
+  },
+  "dependencies": {
+    "@job-hunter/db": "workspace:*",
+    "@job-hunter/icp": "workspace:*",
+    "@job-hunter/scrapers": "workspace:*",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.36.0",
+    "express": "^4.21.0",
+    "inngest": "^3.27.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

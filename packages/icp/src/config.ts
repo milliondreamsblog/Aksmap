@@ -86,7 +86,7 @@ export const config: IcpConfig = {
       visaSignalRequired: true,
       fundingSources: [
         "https://e27.co/feed/",
-        "https://www.dealstreetasia.com/feed/",
+        "https://vulcanpost.com/feed/",
       ],
     },
     usa_remote: {

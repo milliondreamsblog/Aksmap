@@ -13,7 +13,13 @@
       "Bash(pnpm --filter @job-hunter/db db:push)",
       "Bash(pnpm view *)",
       "Bash(node -e ' *)",
-      "Bash(pnpm --filter @job-hunter/icp build)"
+      "Bash(pnpm --filter @job-hunter/icp build)",
+      "Bash(pnpm --filter @job-hunter/workers build)",
+      "Bash(pnpm --filter @job-hunter/workers typecheck)",
+      "Bash(echo \"exit=$?\")",
+      "Read(//tmp/**)",
+      "Bash(pnpm --filter @job-hunter/workers exec tsc)",
+      "Bash(npx tsc *)"
     ]
   }
 }
