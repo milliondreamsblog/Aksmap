@@ -76,6 +76,7 @@ export const config: IcpConfig = {
       fundingSources: [
         "https://inc42.com/feed/",
         "https://yourstory.com/feed",
+        "https://indianstartupnews.com/rss",
         "https://startuptalky.com/feed/",
       ],
     },
@@ -86,6 +87,7 @@ export const config: IcpConfig = {
       visaSignalRequired: true,
       fundingSources: [
         "https://e27.co/feed/",
+        "https://techcrunch.com/tag/asia/feed/",
         "https://vulcanpost.com/feed/",
       ],
     },

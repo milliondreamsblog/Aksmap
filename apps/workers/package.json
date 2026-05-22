@@ -14,10 +14,11 @@
   },
   "dependencies": {
     "@job-hunter/db": "workspace:*",
+    "@job-hunter/enrichment": "workspace:*",
     "@job-hunter/icp": "workspace:*",
     "@job-hunter/scrapers": "workspace:*",
     "dotenv": "^16.4.5",
-    "drizzle-orm": "^0.36.0",
+    "drizzle-orm": "^0.38.0",
     "express": "^4.21.0",
     "inngest": "^3.27.0",
     "zod": "^3.23.8"

@@ -30,8 +30,10 @@ It is **strategy-as-code**: the candidate profile, scoring weights, target geogr
 | 2 | done · pushed | `@job-hunter/db` | 6-table Postgres schema on Supabase (live) |
 | 3 | done | `@job-hunter/scrapers` | YC + RSS + careers, pure functions, smoke-tested |
 | 3.5 | done | `@job-hunter/icp` | Source URL maintenance (dropped 2 dead feeds, added 2 replacements), YC maxPages → 20 |
-| 4 | done · not yet running | `apps/workers` | Inngest service — orchestrates scrape → DB persist (needs Inngest creds to run) |
-| 5 | next | `@job-hunter/scorer` + enrichment | Score leads against ICP weights, fill missing domains |
+| 4 | done · runs in local dev | `apps/workers` | Inngest service — orchestrates scrape → DB persist |
+| 4.5 | done | `@job-hunter/scrapers` | RSS domain inference via TLD probing (~80% resolution) |
+| 5 | done · awaiting end-to-end verification | `@job-hunter/enrichment` + workers | Event-driven enrichment + ICP-weighted scoring; status transitions to queued/archived |
+| 6 | next | `@job-hunter/llm` | Google + Anthropic SDKs, draft personalised messages |
 | 6 | planned | `@job-hunter/llm` | Google + Anthropic SDKs, draft messages |
 | 7 | planned | `@job-hunter/email` | Resend integration, send + bounce tracking |
 | 8 | planned | `apps/*` | Dashboard / approval UI (likely Next.js) |
@@ -82,7 +84,8 @@ Stages, in order:
 | `@job-hunter/icp` | `packages/icp/` | — | Strategy as code. Candidate profile, geos, weights, outreach limits. Pure types + values, no I/O. |
 | `@job-hunter/db` | `packages/db/` | `drizzle-orm`, `postgres` | Schema, typed client, migrations. Single source of truth for data model. |
 | `@job-hunter/scrapers` | `packages/scrapers/` | `icp` only | One pure function per source — YC, RSS, careers. Returns `ScrapeResult<ScrapedLead>`. No DB writes. See [ADR-003](decisions/003-scrapers-as-pure-functions.md). |
-| `apps/workers` | `apps/workers/` | `icp`, `db`, `scrapers` | Express server hosting Inngest functions. Owns all DB writes via `lib/ingest.ts`. See [ADR-004](decisions/004-inngest-for-orchestration.md). |
+| `@job-hunter/enrichment` | `packages/enrichment/` | `icp` only | Pure functions: website parsing (tech stack, hiring signals, people), email pattern generation, MX validation, ICP-weighted scoring. No DB writes. |
+| `apps/workers` | `apps/workers/` | `icp`, `db`, `scrapers`, `enrichment` | Express + Inngest. 5 functions: scrape-yc, scrape-rss, scrape-careers (cron); enrich-lead, score-lead (event-driven). Owns all DB writes. See [ADR-004](decisions/004-inngest-for-orchestration.md). |
 | `@job-hunter/scorer` | *future* | `icp`, `db` | Score function. `(lead, company) → { score, breakdown }`. |
 | `@job-hunter/llm` | *future* | `icp`, `db` | Draft messages and classify replies. AI SDK + Anthropic + Gemini. |
 | `@job-hunter/email` | *future* | `db` | Resend send/receive. Webhook handlers. |
@@ -128,9 +131,10 @@ job-hunter/
 ├── packages/
 │   ├── icp/               strategy as code (Prompt 1)
 │   ├── db/                schema + client (Prompt 2)
-│   └── scrapers/          YC + RSS + careers (Prompt 3)
+│   ├── scrapers/          YC + RSS + careers (Prompt 3)
+│   └── enrichment/        website parsing, email patterns, scoring (Prompt 5)
 ├── apps/
-│   └── workers/           Inngest functions: scrape-yc, scrape-rss, scrape-careers (Prompt 4)
+│   └── workers/           Inngest functions: 3 scraper + 2 enrichment/scoring (Prompts 4 + 5)
 ├── package.json           root, declares pnpm workspace
 ├── pnpm-workspace.yaml
 ├── turbo.json

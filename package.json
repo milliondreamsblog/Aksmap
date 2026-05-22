@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@job-hunter/db": "workspace:*",
+    "@job-hunter/enrichment": "workspace:*",
     "@job-hunter/icp": "workspace:*",
     "@job-hunter/scrapers": "workspace:*",
     "@job-hunter/workers": "workspace:*",
