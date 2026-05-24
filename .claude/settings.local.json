@@ -28,7 +28,8 @@
       "Bash(taskkill //F //PID 30692)",
       "Bash(netstat -ano)",
       "Bash(echo \"build exit=$?\")",
-      "Bash(echo \"tc exit=$?\")"
+      "Bash(echo \"tc exit=$?\")",
+      "Bash(echo \"install exit=$?\")"
     ]
   }
 }

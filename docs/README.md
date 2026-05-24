@@ -17,7 +17,9 @@ Each prompt produces a working slice of the system. These docs record what each 
 - [Prompt 4 — Workers app (Inngest orchestration)](prompts/04-workers-inngest.md)
 - [Prompt 4.5 — RSS domain inference](prompts/04.5-rss-domain-inference.md)
 - [Prompt 5 — Enrichment + scoring pipeline](prompts/05-enrichment-scoring.md)
-- Prompt 6 — LLM personalization — *coming next*
+- [Prompt 6 — Dashboard (Next.js 15)](prompts/06-dashboard.md)
+- Prompt 7 — Resend + send pipeline — *optional, may be skipped*
+- Prompt 8 — Reply detection + analytics — *coming next or last*
 - Prompts 6–8 — *not yet specified*
 
 ## Architecture decision records (ADRs)
