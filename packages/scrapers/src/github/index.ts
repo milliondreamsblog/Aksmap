@@ -41,10 +41,12 @@ function isAiRepo(repo: TrendingRepo): boolean {
 }
 
 function isLikelyCompany(org: GithubOrg): boolean {
-  if (org.blog && org.blog.length > 5) return true;
-  if (org.email) return true;
-  if (org.publicRepos > 3 && org.followers > 10) return true;
-  return false;
+  // GitHub Trending is dominated by individual developers' personal projects.
+  // Companies that hire maintain Organization accounts (Anthropic, Cursor,
+  // Vercel, ...). Individual maintainers — however popular — are User accounts
+  // and aren't useful hiring leads. So: Organizations only.
+  if (org.accountType !== "Organization") return false;
+  return Boolean(org.blog) || Boolean(org.email) || org.followers > 20;
 }
 
 async function repoToLead(
