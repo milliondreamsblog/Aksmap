@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Inbox, BarChart3, FileText, Briefcase } from "lucide-react";
+import { Inbox, BarChart3, FileText, Briefcase, PlusCircle } from "lucide-react";
 
 const NAV = [
+  { href: "/quick-add", label: "Quick Add", icon: PlusCircle },
   { href: "/leads", label: "Leads", icon: Inbox },
   { href: "/stats", label: "Stats", icon: BarChart3 },
   { href: "/templates", label: "Templates", icon: FileText },

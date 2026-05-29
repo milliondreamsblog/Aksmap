@@ -6,6 +6,7 @@ import { CompanyCard } from "@/components/lead-detail/CompanyCard";
 import { ContactCard } from "@/components/lead-detail/ContactCard";
 import { ScoreCard } from "@/components/lead-detail/ScoreCard";
 import { MessageDrafter } from "@/components/lead-detail/MessageDrafter";
+import { SentMessages } from "@/components/lead-detail/SentMessages";
 import { ActionBar } from "@/components/lead-detail/ActionBar";
 
 export const dynamic = "force-dynamic";
@@ -41,6 +42,7 @@ export default async function LeadDetailPage({
         <div className="lg:col-span-2 space-y-4">
           <CompanyCard lead={lead} />
           <MessageDrafter lead={lead} />
+          <SentMessages messages={lead.messages} />
         </div>
         <div className="space-y-4">
           <ScoreCard lead={lead} />

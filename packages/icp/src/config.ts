@@ -12,47 +12,57 @@ export const config: IcpConfig = {
       "Node.js",
       "Python",
       "Go",
+      "React Native",
       "LangChain",
-      "LlamaIndex",
       "RAG",
-      "Vector DBs (Qdrant)",
+      "Vector DBs (MongoDB Atlas, Qdrant)",
       "PostgreSQL",
-      "React",
-      "Spring Boot",
+      "MongoDB",
+      "Claude SDK",
+      "OpenAI SDK",
+      "Docker",
       "AWS",
     ],
     portfolioUrls: [
       "https://bawarchie.com",
       "https://app.buildenfra.in",
+      "https://hr.buildenfra.in",
     ],
     flagshipProjects: [
       {
-        name: "Talk2PDF",
-        narrative: "ai-heavy",
+        name: "BuildEnfra ERP + HRMS",
+        narrative: "b2b-saas",
         oneLineDescription:
-          "Agentic document Q&A tool with modular RAG architecture",
-        metric: "500+ weekly users",
+          "Integrated construction-ops ERP and HRMS serving 17,000+ workforce records, 1,000+ ERP users across 10+ sites managing $2B+ in project value",
+        metric: "17K+ records, 1K+ users, $2B+ portfolio, 700+ payroll PDFs/mo",
       },
       {
         name: "Bawarchie",
         narrative: "consumer",
         oneLineDescription:
-          "Live QR-based restaurant ordering with AI recommendations and Razorpay payments",
-        metric: "Live with real customer traffic",
+          "Multi-tenant SaaS dine-in platform with cross-restaurant taste graph using 768-d Gemini embeddings + MongoDB Atlas Vector Search, RAG-grounded AI waiter, HMAC-signed Razorpay refunds",
+        metric: "3 pilot restaurants, 27-diner field study, live payments",
       },
       {
-        name: "BuildEnfra ERP",
-        narrative: "b2b-saas",
+        name: "Talk2PDF",
+        narrative: "ai-heavy",
         oneLineDescription:
-          "Internal operations platform for real-estate EPC firm — payroll PDFs, approval workflows, mobile-first",
-        metric: "120+ users, $1B+ portfolio under management",
+          "Agentic document Q&A with modular retrieval layer supporting multiple LLMs and vector stores",
+        metric: "500+ weekly users, 10+ shipped AI products total",
+      },
+      {
+        name: "RoboRumble 3.0",
+        narrative: "consumer",
+        oneLineDescription:
+          "Solo-built tech-event platform with live team lobbies, real-time rooms, and Razorpay payments",
+        metric: "30K+ page visits, 1K+ paid registrations, INR 1L+ processed",
       },
       {
         name: "IEEE Publication",
         narrative: "ai-heavy",
         oneLineDescription:
           "Optimized Traffic Sign Recognition using Transfer Learning, IEEE GIEST 2024",
-        metric: "Published, 40% CNN latency reduction",
+        metric: "Published, ~40% CNN inference latency reduction",
       },
     ],
   },
@@ -62,8 +72,8 @@ export const config: IcpConfig = {
   activeGeos: {
     india: true,
     singapore_sea: true,
-    usa_remote: false,
-    europe_uk: false,
+    usa_remote: true,
+    europe_uk: true,
     japan_korea: false,
   },
 

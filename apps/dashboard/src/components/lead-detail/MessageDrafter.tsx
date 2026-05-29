@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { config } from "@job-hunter/icp";
 import type { LeadDetail } from "@/types/leads";
 import { Card } from "../ui/card";
@@ -10,7 +10,8 @@ import {
   buildContext,
   type MessageTemplate,
 } from "@/lib/templates";
-import { Copy, Check } from "lucide-react";
+import { sendEmail } from "@/app/leads/[id]/send-email";
+import { Copy, Check, Send, Loader2, AlertCircle } from "lucide-react";
 
 interface Props {
   lead: LeadDetail;
@@ -27,6 +28,16 @@ export function MessageDrafter({ lead }: Props) {
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [sending, startSendTransition] = useTransition();
+  const [sendResult, setSendResult] = useState<{
+    success: boolean;
+    message: string;
+  } | null>(null);
+
+  const primaryContact =
+    lead.contact ?? (lead.company as { contacts?: Array<{ name: string; email: string | null }> }).contacts?.[0] ?? null;
+  const recipientEmail = primaryContact?.email ?? null;
+  const recipientName = primaryContact?.name ?? null;
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -121,6 +132,57 @@ export function MessageDrafter({ lead }: Props) {
           {copiedField === "all" ? <Check size={14} /> : <Copy size={14} />}
           {copiedField === "all" ? "Copied!" : "Copy subject + body"}
         </button>
+
+        <button
+          onClick={() => {
+            setSendResult(null);
+            startSendTransition(async () => {
+              const result = await sendEmail({
+                leadId: lead.id,
+                recipientEmail: recipientEmail ?? "",
+                recipientName: recipientName ?? "there",
+                subject,
+                body,
+              });
+              setSendResult({
+                success: result.success,
+                message: result.success
+                  ? "Email sent successfully!"
+                  : (result.error ?? "Failed to send"),
+              });
+            });
+          }}
+          disabled={sending || !recipientEmail}
+          className="w-full bg-green-600 text-white py-2 rounded text-sm font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          {sending ? (
+            <Loader2 size={14} className="animate-spin" />
+          ) : (
+            <Send size={14} />
+          )}
+          {sending
+            ? "Sending..."
+            : recipientEmail
+              ? `Send to ${recipientEmail}`
+              : "No recipient email"}
+        </button>
+
+        {sendResult && (
+          <div
+            className={`text-xs px-3 py-2 rounded flex items-center gap-2 ${
+              sendResult.success
+                ? "bg-green-900/20 text-green-400"
+                : "bg-red-900/20 text-red-400"
+            }`}
+          >
+            {sendResult.success ? (
+              <Check size={12} />
+            ) : (
+              <AlertCircle size={12} />
+            )}
+            {sendResult.message}
+          </div>
+        )}
       </div>
     </Card>
   );

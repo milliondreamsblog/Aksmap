@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@job-hunter/db": "workspace:*",
+    "@job-hunter/enrichment": "workspace:*",
     "@job-hunter/icp": "workspace:*",
     "@radix-ui/react-slot": "^1.1.0",
     "class-variance-authority": "^0.7.0",
@@ -23,6 +24,7 @@
     "next": "^15.0.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "resend": "^6.12.3",
     "tailwind-merge": "^2.5.4"
   },
   "devDependencies": {

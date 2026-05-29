@@ -29,7 +29,15 @@
       "Bash(netstat -ano)",
       "Bash(echo \"build exit=$?\")",
       "Bash(echo \"tc exit=$?\")",
-      "Bash(echo \"install exit=$?\")"
+      "Bash(echo \"install exit=$?\")",
+      "PowerShell(pnpm typecheck *)",
+      "PowerShell(pnpm install *)",
+      "PowerShell(New-Item *)",
+      "PowerShell(pnpm build *)",
+      "PowerShell(Remove-Item *)",
+      "PowerShell(Get-Process *)",
+      "PowerShell(Stop-Process *)",
+      "PowerShell(pnpm *)"
     ]
   }
 }

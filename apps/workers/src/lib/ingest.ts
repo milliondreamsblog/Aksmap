@@ -1,4 +1,5 @@
 import { db, companies, leads, events } from "@job-hunter/db";
+import { and, eq, isNull } from "drizzle-orm";
 import type { ScrapeResult, ScrapedLead } from "@job-hunter/scrapers";
 import { inngest } from "../inngest/client.js";
 import { logger } from "./logger.js";
@@ -126,6 +127,28 @@ async function insertLead(
   companyId: string,
   source: string,
 ): Promise<string | null> {
+  // The dedup index on (companyId, roleUrl) doesn't catch NULL roleUrls
+  // (Postgres treats NULL != NULL). Check manually for duplicates.
+  if (!scraped.role?.url) {
+    const existing = await db.query.leads.findFirst({
+      where: and(
+        eq(leads.companyId, companyId),
+        isNull(leads.roleUrl),
+      ),
+      columns: { id: true },
+    });
+    if (existing) return null;
+  }
+
+  // Also dedup by sourceUrl to prevent re-processing the same post
+  if (scraped.sourceUrl) {
+    const existingBySource = await db.query.leads.findFirst({
+      where: eq(leads.sourceUrl, scraped.sourceUrl),
+      columns: { id: true },
+    });
+    if (existingBySource) return null;
+  }
+
   const result = await db
     .insert(leads)
     .values({
