@@ -15,11 +15,13 @@ const OPENAI_MODEL = "gpt-4o-mini";
 const draftSchema = z.object({
   subject: z
     .string()
-    .describe("Subject line under 60 chars, specific to the company. No clickbait, no emoji."),
+    .describe(
+      "Under ~50 characters, lowercase-leaning, specific to the company or a concrete result. Curiosity, not clickbait. No emoji, no 'Re:', no exclamation marks.",
+    ),
   body: z
     .string()
     .describe(
-      "Email body, 90–140 words, plain text only (no markdown). Greet the recipient by first name and sign off as the candidate.",
+      "70–120 words, plain text only — no markdown, no bullet lists. Three short paragraphs: hook, proof, ask. Greet by first name and sign off as the candidate. No leftover placeholders.",
     ),
 });
 
@@ -30,34 +32,62 @@ function buildSystemPrompt(): string {
   const projects = c.flagshipProjects
     .map(
       (p) =>
-        `- ${p.name} [${p.narrative}]: ${p.oneLineDescription} (metrics: ${p.metric})`,
+        `- ${p.name} [${p.narrative}]: ${p.oneLineDescription} — metric: ${p.metric}`,
     )
     .join("\n");
 
-  return `You write cold outreach emails on behalf of ${c.fullName}, a ${c.graduationYear} CS graduate from ${c.university} targeting AI-engineer / founding-engineer roles.
+  return `You are an expert cold-outreach writer. Your emails get replies because they are short, specific, and read like one engineer writing to another — never like a template, a mass blast, or a job application.
 
-CANDIDATE PROFILE
-Primary identity: ${config.primaryIdentity}
-Core skills: ${c.primarySkills.join(", ")}
-Portfolio: ${c.portfolioUrls.join(", ")}
+You write on behalf of ${c.fullName}: a ${c.graduationYear} CS graduate (${c.university}) positioning as a ${config.primaryIdentity}.
+Core stack: ${c.primarySkills.join(", ")}.
+Portfolio: ${c.portfolioUrls.join(", ")}.
 
-Flagship projects (choose the 1–2 MOST relevant to the target company):
+PROOF POINTS — pick the 1–2 that best fit this company and lead with the hard number:
 ${projects}
 
-WRITING RULES
-- Voice: confident, concise, peer-to-peer. Never desperate, salesy, or buzzword-heavy.
-- Open with a specific, genuine hook about THIS company (their funding, product, or domain) — never generic flattery.
-- Reference at most TWO flagship projects, chosen to match what the company builds. Lead with concrete metrics.
-- 90–140 words total. Short paragraphs. Plain text only — no markdown, no bullet lists.
-- Close with a soft, low-friction CTA (e.g. a 15-minute chat).
-- Greet by first name if given, otherwise "there". Sign off as "${c.fullName}".
-- Never invent facts about the company or the candidate. Use only the profile above and the company details provided.`;
+HOW TO CHOOSE WHAT TO SAY
+- Match a project's [narrative] tag to the company: ai-heavy → AI/ML companies; b2b-saas → B2B/enterprise/ops; consumer → consumer/marketplace/social. If unsure, lead with the highest-impact metric.
+- Tie one of ${c.fullName.split(" ")[0]}'s skills to the company's stack or domain — but only when it is genuinely true.
+- The hook must reference something concrete about THIS company (their product, domain, or funding). If all you have is a name and a sector, hook on the sector or the role — do NOT manufacture fake specifics or fake enthusiasm.
+
+STRUCTURE (3 short paragraphs, 70–120 words total)
+1. Hook — one sentence, specific to them. No throat-clearing.
+2. Proof — one or two sentences: the most relevant project + a real metric, and why it maps to what they're building.
+3. Ask — one sentence: a low-friction CTA (a quick 15-minute call).
+
+VOICE
+- Confident, peer-to-peer. Use contractions. Concrete nouns and numbers over adjectives.
+- No hype, no flattery, no buzzwords (synergy, leverage, passionate, rockstar, ninja, cutting-edge).
+
+NEVER open with these clichés — they are instant template/AI tells:
+"I hope this email finds you well", "I came across", "I was impressed by", "I'm excited/thrilled", "I'm reaching out because", "As a recent graduate", "I am writing to", "I'd love the opportunity".
+
+OUTPUT RULES
+- Plain text only. No markdown, headers, or bullet points in the body.
+- Greet by first name if given, otherwise "Hi there,". Sign off exactly as:
+Best,
+${c.fullName}
+- Fill every detail from the profile and company data. Never leave a placeholder like {company}. Never invent facts about the company or the candidate.
+
+EXAMPLE (target voice — do NOT copy; write fresh for each company):
+Subject: shipping reliable AI agents
+Body:
+Hi Priya,
+
+Saw Vellum just raised a seed to put coding agents in front of enterprise teams — getting them reliable enough to trust is the hard part.
+
+I built Talk2PDF, an agentic doc-Q&A system with a swappable retrieval layer across multiple LLMs and vector stores (500+ weekly users), so I've lived the eval-and-grounding grind that makes agents production-safe.
+
+Worth 15 minutes to see if I can help?
+
+Best,
+Akshat Darshi`;
 }
 
 function buildUserPrompt(input: DraftInput): string {
   const { company, role, contactFirstName } = input;
   const lines = [
-    `Write a personalized outreach email to this company.`,
+    `Write one personalized cold outreach email for this company. Decide which 1–2 proof points fit best, then write it.`,
     ``,
     `COMPANY: ${company.name}`,
   ];
@@ -68,8 +98,14 @@ function buildUserPrompt(input: DraftInput): string {
     lines.push(`Tech stack: ${company.techStack.join(", ")}`);
   if (company.isAiCompany) lines.push(`This is an AI-focused company.`);
   if (company.geo) lines.push(`Region: ${company.geo}`);
-  lines.push(`ROLE: ${role?.title ?? "an engineering role"}`);
-  lines.push(`RECIPIENT FIRST NAME: ${contactFirstName ?? "there"}`);
+  lines.push(`ROLE THEY'RE HIRING FOR: ${role?.title ?? "an engineering role"}`);
+  lines.push(`RECIPIENT FIRST NAME: ${contactFirstName ?? "(unknown — use \"there\")"}`);
+  if (!company.description && !company.fundingStage && !company.fundingAmount) {
+    lines.push(
+      ``,
+      `NOTE: company detail is thin — hook on their sector/role and do not invent specifics.`,
+    );
+  }
   return lines.join("\n");
 }
 
