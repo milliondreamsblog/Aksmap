@@ -1,6 +1,13 @@
 "use client";
 
-import { ExternalLink, Search, Send, X, Archive } from "lucide-react";
+import {
+  ExternalLink,
+  Search,
+  Send,
+  MessageCircle,
+  X,
+  Archive,
+} from "lucide-react";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { updateLeadStatus } from "@/app/leads/[id]/actions";
@@ -47,6 +54,12 @@ export function ActionBar({ lead }: Props) {
         label="Mark sent"
         onClick={() => setStatus("sent")}
         disabled={pending || lead.status === "sent"}
+      />
+      <StatusButton
+        icon={<MessageCircle size={14} />}
+        label="Mark replied"
+        onClick={() => setStatus("replied")}
+        disabled={pending || lead.status === "replied"}
       />
       <StatusButton
         icon={<X size={14} />}

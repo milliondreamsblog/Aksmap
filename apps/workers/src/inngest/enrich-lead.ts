@@ -51,8 +51,10 @@ export const enrichLeadJob = inngest.createFunction(
           .set({
             techStack: enrichment.techStack,
             isAiCompany: enrichment.isAiCompany,
-            careersUrl: enrichment.careersUrl,
-            description: enrichment.about ?? undefined,
+            // postgres.js rejects `undefined` (only `null` is allowed), and
+            // these enrichment fields are optional — coerce to null.
+            careersUrl: enrichment.careersUrl ?? null,
+            description: enrichment.about ?? null,
             websiteScrapedAt: new Date(),
             updatedAt: new Date(),
           })
@@ -79,7 +81,7 @@ export const enrichLeadJob = inngest.createFunction(
           .values({
             companyId: ctx.companyId,
             name: person.name,
-            role: person.role,
+            role: person.role ?? null,
             email,
             emailVerified: mxValid,
             isPrimary: inserted === 0,

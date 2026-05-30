@@ -62,8 +62,35 @@ export function LeadTable({ leads, counts, currentStatus }: Props) {
       </div>
 
       {leads.length === 0 ? (
-        <div className="text-center py-12 text-muted">
-          No leads in this view.
+        <div className="text-center py-16 border border-dashed border-border rounded-lg">
+          <p className="text-text font-medium">
+            {totalCount === 0
+              ? "No leads yet"
+              : "Nothing in this view"}
+          </p>
+          <p className="text-muted text-sm mt-1 max-w-sm mx-auto">
+            {totalCount === 0
+              ? "Add one from a hiring post, or trigger a scraper to pull leads automatically."
+              : "Try a different status above — your leads are in another stage."}
+          </p>
+          {totalCount === 0 && (
+            <div className="mt-4 flex items-center justify-center gap-3">
+              <a
+                href="/quick-add"
+                className="px-3 py-1.5 rounded-md text-sm font-medium bg-accent/20 border border-accent/50 text-accent hover:bg-accent/30 transition-colors"
+              >
+                Quick Add a lead
+              </a>
+              <a
+                href="http://localhost:8288"
+                target="_blank"
+                rel="noreferrer"
+                className="px-3 py-1.5 rounded-md text-sm font-medium border border-border text-muted hover:text-text transition-colors"
+              >
+                Run a scraper
+              </a>
+            </div>
+          )}
         </div>
       ) : (
         <div className="border border-border rounded-lg overflow-hidden">

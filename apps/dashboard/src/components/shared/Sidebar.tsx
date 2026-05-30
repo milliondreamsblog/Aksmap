@@ -1,7 +1,15 @@
 import Link from "next/link";
-import { Inbox, BarChart3, FileText, Briefcase, PlusCircle } from "lucide-react";
+import {
+  Home,
+  Inbox,
+  BarChart3,
+  FileText,
+  Briefcase,
+  PlusCircle,
+} from "lucide-react";
 
 const NAV = [
+  { href: "/", label: "Today", icon: Home },
   { href: "/quick-add", label: "Quick Add", icon: PlusCircle },
   { href: "/leads", label: "Leads", icon: Inbox },
   { href: "/stats", label: "Stats", icon: BarChart3 },
@@ -13,7 +21,7 @@ export function Sidebar() {
     <aside className="w-56 border-r border-border bg-surface flex flex-col">
       <div className="p-4 border-b border-border">
         <Link
-          href="/leads"
+          href="/"
           className="flex items-center gap-2 text-text font-semibold"
         >
           <Briefcase size={18} />

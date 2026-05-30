@@ -18,6 +18,7 @@
     "@job-hunter/db": "workspace:*",
     "@job-hunter/enrichment": "workspace:*",
     "@job-hunter/icp": "workspace:*",
+    "@job-hunter/llm": "workspace:*",
     "@job-hunter/scrapers": "workspace:*",
     "@job-hunter/workers": "workspace:*",
     "@types/node": "^22.0.0",

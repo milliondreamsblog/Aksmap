@@ -11,7 +11,8 @@ import {
   type MessageTemplate,
 } from "@/lib/templates";
 import { sendEmail } from "@/app/leads/[id]/send-email";
-import { Copy, Check, Send, Loader2, AlertCircle } from "lucide-react";
+import { generateDraft } from "@/app/leads/[id]/generate-draft";
+import { Copy, Check, Send, Loader2, AlertCircle, Sparkles } from "lucide-react";
 
 interface Props {
   lead: LeadDetail;
@@ -33,6 +34,32 @@ export function MessageDrafter({ lead }: Props) {
     success: boolean;
     message: string;
   } | null>(null);
+  const [generating, startGenerateTransition] = useTransition();
+  const [genError, setGenError] = useState<string | null>(null);
+  const [genProvider, setGenProvider] = useState<string | null>(null);
+
+  const aiGenerate = () => {
+    setGenError(null);
+    setGenProvider(null);
+    setSendResult(null);
+    startGenerateTransition(async () => {
+      const result = await generateDraft(lead.id);
+      if (result.success) {
+        if (result.subject) setSubject(result.subject);
+        if (result.body) setBody(result.body);
+        setGenProvider(result.provider ?? null);
+      } else {
+        setGenError(result.error ?? "Failed to generate draft.");
+      }
+    });
+  };
+
+  const providerLabel =
+    genProvider === "google"
+      ? "Gemini"
+      : genProvider === "openai"
+        ? "OpenAI (fallback)"
+        : null;
 
   const primaryContact =
     lead.contact ?? (lead.company as { contacts?: Array<{ name: string; email: string | null }> }).contacts?.[0] ?? null;
@@ -67,17 +94,46 @@ export function MessageDrafter({ lead }: Props) {
   return (
     <Card title="Message draft">
       <div className="space-y-3">
-        <select
-          value={selectedId}
-          onChange={(e) => setSelectedId(e.target.value)}
-          className="w-full bg-bg border border-border rounded px-3 py-2 text-sm"
-        >
-          {templates.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-            </option>
-          ))}
-        </select>
+        <div className="flex gap-2">
+          <select
+            value={selectedId}
+            onChange={(e) => setSelectedId(e.target.value)}
+            className="flex-1 bg-bg border border-border rounded px-3 py-2 text-sm"
+          >
+            {templates.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={aiGenerate}
+            disabled={generating}
+            title="Generate a personalized draft with Claude"
+            className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded text-sm font-medium bg-accent/15 border border-accent/40 text-accent hover:bg-accent/25 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {generating ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : (
+              <Sparkles size={14} />
+            )}
+            {generating ? "Writing…" : "Generate with AI"}
+          </button>
+        </div>
+
+        {genError && (
+          <div className="text-xs px-3 py-2 rounded flex items-center gap-2 bg-red-900/20 text-red-400">
+            <AlertCircle size={12} />
+            {genError}
+          </div>
+        )}
+
+        {providerLabel && !genError && (
+          <div className="text-xs text-muted flex items-center gap-1.5">
+            <Sparkles size={12} className="text-accent" />
+            Drafted with {providerLabel} · edit before sending
+          </div>
+        )}
 
         <div>
           <div className="flex justify-between items-center mb-1">
