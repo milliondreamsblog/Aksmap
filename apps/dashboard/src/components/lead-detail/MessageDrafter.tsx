@@ -85,6 +85,20 @@ export function MessageDrafter({ lead }: Props) {
     setBody(applyTemplate(template.body, ctx));
   }, [selectedId, templates, lead]);
 
+  // Pre-fill from a saved LLM draft (generated ahead of time), overriding the
+  // template default. Primitive deps keep this to once per draft, and it runs
+  // after the template effect so the saved draft wins on initial load.
+  const savedDraft = lead.messages.find(
+    (m) => m.channel === "email" && m.status === "draft",
+  );
+  const savedSubject = savedDraft?.subject ?? null;
+  const savedBody = savedDraft?.body ?? null;
+  useEffect(() => {
+    if (savedBody === null) return;
+    if (savedSubject) setSubject(savedSubject);
+    setBody(savedBody);
+  }, [savedSubject, savedBody]);
+
   const copy = async (text: string, field: string) => {
     await navigator.clipboard.writeText(text);
     setCopiedField(field);
