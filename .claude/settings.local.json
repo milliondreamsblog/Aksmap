@@ -80,7 +80,27 @@
       "Bash(pnpm add *)",
       "PowerShell($keys = \"ANTHROPIC_API_KEY\",\"CLAUDE_API_KEY\",\"GOOGLE_GENERATIVE_AI_API_KEY\",\"GEMINI_API_KEY\"; foreach \\($k in $keys\\) { $v = [Environment]::GetEnvironmentVariable\\($k\\); if \\($v\\) { \"$k : SET \\(length $\\($v.Length\\), starts '$\\($v.Substring\\(0,[Math]::Min\\(7,$v.Length\\)\\)\\)...'\\)\" } else { \"$k : not set\" } })",
       "Bash(pnpm remove *)",
-      "Bash(git check-ignore *)"
+      "Bash(git check-ignore *)",
+      "Bash(pnpm lint *)",
+      "Bash(pnpm --filter @job-hunter/dashboard lint)",
+      "PowerShell($f = \"C:\\\\Users\\\\Akshat Darshi\\\\package-lock.json\"; if \\(Test-Path $f\\) { $i = Get-Item $f; \"Path: $\\($i.FullName\\)\"; \"Size: $\\($i.Length\\) bytes\"; \"Modified: $\\($i.LastWriteTime\\)\"; \"--- first lines ---\"; Get-Content $f -TotalCount 8 } else { \"No such file.\" })",
+      "Bash(grep -iE \"secret|key|\\\\.local$|credential\")",
+      "Bash(node -e \"console.log\\(0.2+0.15+0.18+0.1+0.12+0.08+0.1+0.07\\)\")",
+      "Bash(node --input-type=module -e ' *)",
+      "Bash(node --env-file=../../.env.local --input-type=module -e ' *)",
+      "Bash(nslookup google.com)",
+      "Bash(nslookup aws-1-ap-northeast-2.pooler.supabase.com)",
+      "Bash(nslookup supabase.com)",
+      "Bash(node *)",
+      "Bash(cd *)",
+      "Bash(grep -qiE \"ready|started server|localhost:3002\" \"C:/Users/AKSHAT~1/AppData/Local/Temp/claude/C--Users-Akshat-Darshi-Desktop-cohort-assigment-FinalYearProject-Aksmap/591c620c-aef6-4851-bc8b-24a8767f1206/tasks/bb5njniha.output\")",
+      "Bash(break)",
+      "Bash(sleep 2)",
+      "Bash(tail -15 \"C:/Users/AKSHAT~1/AppData/Local/Temp/claude/C--Users-Akshat-Darshi-Desktop-cohort-assigment-FinalYearProject-Aksmap/591c620c-aef6-4851-bc8b-24a8767f1206/tasks/bb5njniha.output\")",
+      "Bash(curl -s -o /dev/null -w \"home /  -> HTTP %{http_code}\\\\n\" http://localhost:3002/)",
+      "Bash(curl -s -o /dev/null -w \"leads?status=queued -> HTTP %{http_code}\\\\n\" \"http://localhost:3002/leads?status=queued\")",
+      "Bash(curl -s \"http://localhost:3002/leads?status=queued\")",
+      "Bash(grep -oiE \"\\(No leads|<td[^>]*>[^<]{2,40}</td>|score|company\\)\")"
     ]
   }
 }

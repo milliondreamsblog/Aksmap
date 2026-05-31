@@ -33,7 +33,12 @@ export async function generateDraft(
   if (!lead) return { success: false, error: "Lead not found." };
 
   const contact = lead.contact ?? lead.company.contacts?.[0] ?? null;
-  const firstName = contact?.name?.split(/\s+/)[0] ?? null;
+  // Role-based inboxes (founder@, hello@) have no real first name — greet
+  // generically ("Hi there,") rather than "Hi Founder,".
+  const firstName =
+    contact && contact.role !== "generic-inbox"
+      ? (contact.name?.split(/\s+/)[0] ?? null)
+      : null;
 
   try {
     const draft = await draftOutreach({

@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import {
   enrichFromWebsite,
   generateEmailCandidates,
+  genericInboxCandidates,
   hasValidMx,
 } from "@job-hunter/enrichment";
 import { inngest } from "./client.js";
@@ -63,18 +64,13 @@ export const enrichLeadJob = inngest.createFunction(
     }
 
     const contactCount = await step.run("derive-contacts", async () => {
-      if (!enrichment || enrichment.candidatePeople.length === 0) return 0;
-
       let inserted = 0;
-      for (const person of enrichment.candidatePeople.slice(0, 3)) {
-        const candidates = generateEmailCandidates(person.name, ctx.domain);
-        if (candidates.length === 0) continue;
 
+      for (const person of enrichment?.candidatePeople.slice(0, 3) ?? []) {
+        const candidates = generateEmailCandidates(person.name, ctx.domain);
         const firstCandidate = candidates[0];
         if (!firstCandidate) continue;
         const mxValid = await hasValidMx(firstCandidate);
-
-        const email = firstCandidate;
 
         await db
           .insert(contacts)
@@ -82,13 +78,35 @@ export const enrichLeadJob = inngest.createFunction(
             companyId: ctx.companyId,
             name: person.name,
             role: person.role ?? null,
-            email,
+            email: firstCandidate,
             emailVerified: mxValid,
             isPrimary: inserted === 0,
           })
           .onConflictDoNothing();
         inserted++;
       }
+
+      // No named person on the site — fall back to a role-based inbox so the
+      // company is still reachable. MX-check the domain (not the website) so
+      // this works even when the homepage was unreachable. Skip dead domains.
+      if (inserted === 0) {
+        const generic = genericInboxCandidates(ctx.domain)[0];
+        if (generic && (await hasValidMx(generic))) {
+          await db
+            .insert(contacts)
+            .values({
+              companyId: ctx.companyId,
+              name: "Founder",
+              role: "generic-inbox",
+              email: generic,
+              emailVerified: true,
+              isPrimary: true,
+            })
+            .onConflictDoNothing();
+          inserted++;
+        }
+      }
+
       return inserted;
     });
 
