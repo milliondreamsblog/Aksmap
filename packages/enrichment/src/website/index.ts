@@ -6,7 +6,16 @@ import { extractPeople, findPeoplePageLinks } from "./extract-people.js";
 import type { CandidatePerson } from "../types.js";
 
 // Common team/about paths to try when the homepage doesn't link one directly.
-const FALLBACK_PEOPLE_PATHS = ["/about", "/team", "/about-us"];
+const FALLBACK_PEOPLE_PATHS = [
+  "/team",
+  "/about",
+  "/about-us",
+  "/our-team",
+  "/leadership",
+  "/founders",
+  "/people",
+  "/who-we-are",
+];
 
 export async function enrichFromWebsite(
   domain: string,
@@ -43,7 +52,7 @@ async function collectPeople(
 
   const linked = findPeoplePageLinks(homepageHtml, homepageUrl);
   const guesses = FALLBACK_PEOPLE_PATHS.map((p) => `https://${domain}${p}`);
-  const toVisit = [...new Set([...linked, ...guesses])].slice(0, 3);
+  const toVisit = [...new Set([...linked, ...guesses])].slice(0, 4);
 
   for (const url of toVisit) {
     if (people.length >= 5) break;

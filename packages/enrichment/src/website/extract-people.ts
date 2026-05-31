@@ -85,7 +85,9 @@ export function extractPeople(html: string): CandidatePerson[] {
     }
   });
 
-  const textBlocks = $("p, li, h2, h3, h4, .team, .founder, .about").toArray();
+  const textBlocks = $(
+    "p, li, h2, h3, h4, h5, .team, .founder, .about, .member, .profile, .bio, .person",
+  ).toArray();
   for (const el of textBlocks) {
     const text = $(el).text().slice(0, 500);
     if (!ROLE_REGEX.test(text)) continue;
@@ -124,11 +126,27 @@ export function extractPeople(html: string): CandidatePerson[] {
     candidates.push({ name, source: "html" });
   });
 
+  // Team-grid photos often carry the person in alt text ("Jane Doe, CEO").
+  // Require a role hint in the alt so product/logo images don't slip through.
+  $("img[alt]").each((_, el) => {
+    if (candidates.length >= 8) return;
+    const alt = $(el).attr("alt")?.trim();
+    if (!alt || !ROLE_REGEX.test(alt)) return;
+    const nameMatch = alt.match(NAME_REGEX);
+    if (!nameMatch?.[1]) return;
+    const name = nameMatch[1];
+    if (!looksLikeName(name)) return;
+    const key = name.toLowerCase();
+    if (seen.has(key)) return;
+    seen.add(key);
+    candidates.push({ name, role: alt.match(ROLE_REGEX)?.[1], source: "html" });
+  });
+
   return candidates;
 }
 
 const PEOPLE_PATH_REGEX =
-  /(team|about|people|leadership|founders?|our-story|who-we-are|company)/i;
+  /(team|about|people|leadership|founders?|our-story|who-we-are|company|meet|crew|staff|management)/i;
 
 // Find same-host links that likely lead to a team / about / leadership page,
 // where named people are usually listed (the homepage rarely lists them).
