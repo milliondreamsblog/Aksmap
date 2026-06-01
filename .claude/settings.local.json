@@ -100,7 +100,16 @@
       "Bash(curl -s -o /dev/null -w \"home /  -> HTTP %{http_code}\\\\n\" http://localhost:3002/)",
       "Bash(curl -s -o /dev/null -w \"leads?status=queued -> HTTP %{http_code}\\\\n\" \"http://localhost:3002/leads?status=queued\")",
       "Bash(curl -s \"http://localhost:3002/leads?status=queued\")",
-      "Bash(grep -oiE \"\\(No leads|<td[^>]*>[^<]{2,40}</td>|score|company\\)\")"
+      "Bash(grep -oiE \"\\(No leads|<td[^>]*>[^<]{2,40}</td>|score|company\\)\")",
+      "Bash(echo \"=== sender identity ===\")",
+      "Bash(grep -E \"^SENDER_EMAIL=|^SENDER_NAME=\" .env.local)",
+      "Bash(echo \"\")",
+      "Bash(echo \"=== Resend domain verification status ===\")",
+      "Bash(grep -E \"^RESEND_API_KEY=\" .env.local)",
+      "Bash(curl -s --max-time 60 \"http://localhost:3002/leads?status=sent\" -o /dev/null -w \"leads?status=sent: HTTP %{http_code}\\\\n\")",
+      "Bash(curl -s --max-time 60 \"http://localhost:3002/stats\")",
+      "Bash(curl -s -o /dev/null -w \"dashboard 3002: HTTP %{http_code}\\\\n\" --max-time 5 http://localhost:3002/)",
+      "Bash(curl -s -o /dev/null -w \"workers 3001: HTTP %{http_code}\\\\n\" --max-time 5 http://localhost:3001/health)"
     ]
   }
 }

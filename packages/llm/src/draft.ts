@@ -9,7 +9,7 @@ import type { DraftInput, DraftOutput } from "./types.js";
 // Provider instances read their keys (GOOGLE_GENERATIVE_AI_API_KEY /
 // OPENAI_API_KEY) lazily at request time, so constructing both is safe even
 // when only one key is set.
-const GEMINI_MODEL = "gemini-2.5-flash";
+const GEMINI_MODEL = process.env.LLM_MODEL ?? "gemini-2.5-flash";
 const OPENAI_MODEL = "gpt-4o-mini";
 
 const draftSchema = z.object({
