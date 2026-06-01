@@ -93,8 +93,8 @@ export function QuickAddForm() {
           />
           {platform === "linkedin" && (
             <p className="text-xs text-warning">
-              LinkedIn posts can't be fetched automatically — please paste the
-              text above.
+              LinkedIn posts can&apos;t be fetched automatically — please paste
+              the text above.
             </p>
           )}
         </div>

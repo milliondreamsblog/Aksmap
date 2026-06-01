@@ -1,3 +1,18 @@
+const GENERIC_LOCAL_PARTS = [
+  "founder",
+  "hello",
+  "team",
+  "contact",
+  "careers",
+] as const;
+
+// Fallback when no named person is found on the site. These role-based inboxes
+// commonly exist at early-stage startups and reach a human; ordered by how
+// likely they are to land in front of a decision-maker.
+export function genericInboxCandidates(domain: string): string[] {
+  return GENERIC_LOCAL_PARTS.map((local) => `${local}@${domain}`);
+}
+
 export function generateEmailCandidates(
   fullName: string,
   domain: string,

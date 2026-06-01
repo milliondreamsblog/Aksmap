@@ -84,6 +84,9 @@ export async function sendEmail(
       from: `${SENDER_NAME} <${SENDER_EMAIL}>`,
       to: [recipientEmail],
       replyTo: config.candidate.email,
+      // BCC self so a copy lands in the candidate's own inbox (roborumble.in
+      // has no mailbox; this is the only Gmail-side archive of outbound mail).
+      bcc: [config.candidate.email],
       subject,
       text: body,
     });

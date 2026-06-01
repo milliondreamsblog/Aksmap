@@ -21,6 +21,8 @@ export interface GithubOrg {
   twitterUsername: string | null;
   publicRepos: number;
   followers: number;
+  accountType: "Organization" | "User";
+  company: string | null;
 }
 
 const TRENDING_URL = "https://github.com/trending";
@@ -114,6 +116,8 @@ export async function fetchOrgInfo(login: string): Promise<GithubOrg | null> {
         : null,
       publicRepos: Number(data["public_repos"] ?? 0),
       followers: Number(data["followers"] ?? 0),
+      accountType: "Organization",
+      company: null,
     };
   } catch {
     return null;
@@ -140,6 +144,10 @@ export async function fetchUserInfo(
         : null,
       publicRepos: Number(data["public_repos"] ?? 0),
       followers: Number(data["followers"] ?? 0),
+      accountType: String(data["type"] ?? "User") === "Organization"
+        ? "Organization"
+        : "User",
+      company: data["company"] ? String(data["company"]) : null,
     };
   } catch {
     return null;
