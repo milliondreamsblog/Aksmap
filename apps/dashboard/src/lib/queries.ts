@@ -78,6 +78,7 @@ export async function getSentOutreach() {
       messageId: messages.id,
       leadId: messages.leadId,
       subject: messages.subject,
+      body: messages.body,
       status: messages.status,
       sentAt: messages.sentAt,
       createdAt: messages.createdAt,
