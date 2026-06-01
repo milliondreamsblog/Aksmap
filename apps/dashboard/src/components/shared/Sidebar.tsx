@@ -6,12 +6,14 @@ import {
   FileText,
   Briefcase,
   PlusCircle,
+  Send,
 } from "lucide-react";
 
 const NAV = [
   { href: "/", label: "Today", icon: Home },
   { href: "/quick-add", label: "Quick Add", icon: PlusCircle },
   { href: "/leads", label: "Leads", icon: Inbox },
+  { href: "/outreach", label: "Outreach", icon: Send },
   { href: "/stats", label: "Stats", icon: BarChart3 },
   { href: "/templates", label: "Templates", icon: FileText },
 ];

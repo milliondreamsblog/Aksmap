@@ -1,5 +1,5 @@
-import { db, leads } from "./db";
-import { eq, desc, sql } from "drizzle-orm";
+import { db, leads, messages, companies } from "./db";
+import { eq, desc, sql, inArray } from "drizzle-orm";
 
 export type LeadWithRelations = Awaited<ReturnType<typeof getLeads>>[number];
 
@@ -57,6 +57,44 @@ export async function getStatusCounts() {
     .groupBy(leads.status);
 
   return rows;
+}
+
+export type SentOutreachRow = Awaited<
+  ReturnType<typeof getSentOutreach>
+>[number];
+
+// Every email that has left the drafting stage — the consolidated outreach log.
+export async function getSentOutreach() {
+  const recipient = (col: "email" | "name") =>
+    sql<string | null>`(
+      select c.${sql.raw(col)} from contacts c
+      where c.company_id = ${companies.id} and c.email is not null
+      order by c.is_primary desc nulls last
+      limit 1
+    )`;
+
+  return db
+    .select({
+      messageId: messages.id,
+      leadId: messages.leadId,
+      subject: messages.subject,
+      status: messages.status,
+      sentAt: messages.sentAt,
+      createdAt: messages.createdAt,
+      providerMessageId: messages.providerMessageId,
+      company: companies.name,
+      domain: companies.domain,
+      leadStatus: leads.status,
+      recipientEmail: recipient("email"),
+      recipientName: recipient("name"),
+    })
+    .from(messages)
+    .innerJoin(leads, eq(messages.leadId, leads.id))
+    .innerJoin(companies, eq(leads.companyId, companies.id))
+    .where(
+      inArray(messages.status, ["sent", "sending", "failed", "bounced"]),
+    )
+    .orderBy(desc(messages.sentAt), desc(messages.createdAt));
 }
 
 export async function getStats() {
